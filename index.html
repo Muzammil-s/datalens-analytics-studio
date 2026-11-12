@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DataLens Analytics Studio — Local-first interactive CSV data cleaning, descriptive statistics, correlation heatmaps, visualizations, and downloadable reports." />
+  <title>DataLens Analytics Studio — Local CSV Intelligence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">DL</div>
+        <div>
+          <h1>DataLens Analytics Studio</h1>
+          <p>Local-First CSV Profiling, Cleaning &amp; Statistical Visualization</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="privacy-badge">100% LOCAL BROWSER PROCESSING</span>
+        <select id="sample-select" aria-label="Load sample CSV dataset">
+          <option value="ecommerce">Sample: E-Commerce Orders</option>
+          <option value="security">Sample: Network Telemetry Logs</option>
+          <option value="students">Sample: CS Skills Survey</option>
+        </select>
+        <label class="btn btn-primary" for="csv-upload">Upload CSV</label>
+        <input id="csv-upload" type="file" accept=".csv,.tsv,.txt" hidden />
+      </div>
+    </header>
+
+    <section id="dropzone" class="dropzone" tabindex="0">
+      <span>Drop any <code>.csv</code> file here or click <strong>Upload CSV</strong> above — your dataset stays inside this browser tab.</span>
+      <div class="export-group">
+        <button id="btn-export-csv" class="btn btn-secondary" type="button">Download Cleaned CSV</button>
+        <button id="btn-export-md" class="btn btn-secondary" type="button">Download MD Report</button>
+        <button id="btn-export-json" class="btn btn-secondary" type="button">Download JSON Summary</button>
+      </div>
+    </section>
+
+    <section class="kpi-grid" aria-label="Dataset quality KPIs">
+      <article class="kpi"><span>Rows</span><strong id="kpi-rows">0</strong><small id="kpi-source">Sample loaded</small></article>
+      <article class="kpi"><span>Columns</span><strong id="kpi-cols">0</strong><small id="kpi-types">0 numeric · 0 categorical</small></article>
+      <article class="kpi"><span>Completeness</span><strong id="kpi-complete">100%</strong><small id="kpi-missing">0 missing cells</small></article>
+      <article class="kpi"><span>Duplicate Rows</span><strong id="kpi-dupes">0</strong><small id="kpi-clean-count">0 cleaning steps</small></article>
+    </section>
+
+    <section class="panel cleaning-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Data Cleaning Pipeline</h2>
+          <p class="muted">Apply deterministic transformations and preview the audit log before exporting.</p>
+        </div>
+        <button id="btn-reset" class="btn btn-ghost" type="button">Reset to Raw Data</button>
+      </div>
+      <div class="cleaning-controls">
+        <label><input type="checkbox" id="chk-trim" checked /> Trim whitespace</label>
+        <label><input type="checkbox" id="chk-dupes" checked /> Remove duplicate rows</label>
+        <label>
+          Missing Values:
+          <select id="sel-missing">
+            <option value="keep">Keep as-is</option>
+            <option value="impute">Impute (Median / Mode)</option>
+            <option value="drop">Drop rows with nulls</option>
+          </select>
+        </label>
+        <label>
+          Numeric Imputation:
+          <select id="sel-impute">
+            <option value="median">Median</option>
+            <option value="mean">Mean</option>
+          </select>
+        </label>
+        <button id="btn-clean" class="btn btn-primary" type="button">Apply Cleaning</button>
+      </div>
+      <div id="cleaning-log" class="cleaning-log"></div>
+    </section>
+
+    <section class="viz-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Distribution / Frequency Chart</h2>
+          <select id="sel-dist-col" aria-label="Select column for distribution chart"></select>
+        </div>
+        <div id="dist-chart" class="chart-box"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Scatter Correlation Explorer</h2>
+          <div class="inline-selects">
+            <select id="sel-x-col" aria-label="Scatter X axis"></select>
+            <select id="sel-y-col" aria-label="Scatter Y axis"></select>
+          </div>
+        </div>
+        <div id="scatter-meta" class="muted small-note"></div>
+        <div id="scatter-chart" class="chart-box"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Descriptive Statistics &amp; Schema Profile</h2>
+        <span class="badge">IQR Outlier Detection</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th>Missing</th>
+              <th>Unique</th>
+              <th>Mean</th>
+              <th>Median</th>
+              <th>Std Dev</th>
+              <th>Min / Max</th>
+              <th>Outliers / Top Values</th>
+            </tr>
+          </thead>
+          <tbody id="stats-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" id="corr-panel">
+      <div class="panel-head">
+        <h2>Pearson Correlation Matrix</h2>
+        <span class="badge">Numeric Columns</span>
+      </div>
+      <div id="corr-matrix" class="table-wrap"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Interactive Data Preview</h2>
+        <input id="row-search" type="search" placeholder="Search rows..." aria-label="Filter table rows" />
+      </div>
+      <div class="table-wrap" id="preview-wrap"></div>
+    </section>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
