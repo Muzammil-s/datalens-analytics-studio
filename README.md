@@ -4,6 +4,11 @@
 
 ---
 
+## Live Demo
+
+- **Production URL:** [https://datalens-analytics-studio.vercel.app/](https://datalens-analytics-studio.vercel.app/)
+- **Mode:** Live local-first CSV analytics studio deployed on Vercel.
+
 ## Application Preview
 
 ![DataLens Analytics Studio](docs/screenshot.png)
